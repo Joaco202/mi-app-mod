@@ -1,0 +1,13 @@
+<nav class="navbar navbar-expand navbar-dark bg-primary">
+  <a class="navbar-brand" href="#">
+    <img src="ACME_logo.png" width="100" alt="ACME Logo">
+  </a>
+  <div>
+    <h1 id="titulo">{{ title()}}</h1>
+    <!--{{ 'Titulo' + title() }}
+    {{ 'Titulo' + getTitle() }}
+    {{2*20 +1}}
+    <h1 innerText={{ title() }}></h1> -->
+  </div>
+</nav>
+<app-product-list [datos]="filteredProducts()"></app-product-list>
