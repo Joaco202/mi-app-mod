@@ -10,4 +10,28 @@
     <h1 innerText={{ title() }}></h1> -->
   </div>
 </nav>
-<app-product-list [datos]="filteredProducts()"></app-product-list>
+<!--<app-product-list [datos]="filteredProducts()"></app-product-list> -->
+
+<div class="row">
+  <div class="col-md-2">Filtrar por:</div>
+  <div class="col-md-2">
+    <input type="text" [ngModel]="listFilter()" (ngModelChange)="listFilter.set($event)">
+  </div>
+  <div class="col-md-2">
+    Filtrado por: {{ listFilter() }}
+  </div>
+  <div class="col-md-2">
+    Dato recibido: {{ datoRecibido() }}
+  </div>
+  <div class="col-md-4">
+    <button class="btn btn-primary" (click)="toggleChildren()">
+      <i class="bi bi-eye"></i>
+      {{ showChildren() ? 'Ocultar' : 'Mostrar' }} Hijo
+    </button>
+  </div>
+</div>
+
+<br>
+@if (showChildren()) {
+  <app-product-list [datos]="filteredProducts()" (datoEmitido)="datoRecibido.set($event)"></app-product-list>
+}

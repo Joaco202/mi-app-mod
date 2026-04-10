@@ -1,21 +1,20 @@
 import { Component, computed, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { IProduct } from './product';
+import { ProductList } from './product/product-list/product-list';
 
 @Component({
   selector: 'app-root',
-  /*imports: [ 
-    RouterOutlet,
-    NgFor,
-    NgIf
-  ],*/
+  imports: [FormsModule, ProductList],
   templateUrl: './app.html',
-  standalone: false,
+  standalone: true,
   styleUrl: './app.css'
 })
 export class App {
   protected readonly title = signal('Empresa ACME');
   listFilter= signal('');
+  datoRecibido = signal('');
 
   products = signal<IProduct[]>([
     {
@@ -25,7 +24,7 @@ export class App {
       releaseDate: "2024-02-04",
       price: 20000,
       description: "Para cosas",
-      starRating: 4,
+      starRating: 160,
       imagenUrl: "/cpu.jpg"
     },    
     {
@@ -35,7 +34,7 @@ export class App {
       releaseDate: "2024-02-04",
       price: 20000,
       description: "Para cosas",
-      starRating: 4,
+      starRating: 200,
       imagenUrl: "/1080ti.jpg"
     },    
     {
@@ -45,7 +44,7 @@ export class App {
       releaseDate: "2024-06-04",
       price: 20000,
       description: "Para cosas",
-      starRating: 4,
+      starRating: 120,
       imagenUrl: "/ram.jpg"
     },
   ]);
@@ -54,4 +53,25 @@ export class App {
     this.products().filter(product => 
       product.productName.toLowerCase().includes(this.listFilter().toLowerCase()))
   );
+
+  constructor() {
+    console.log('Padre: constructor');
+  }
+
+  ngOnInit():void {
+    console.log('Padre: ngOnInit');
+  }
+
+  ngOnChanges():void {
+    console.log('Padre: ngOnChanges');
+  }
+
+  ngOnDestroy():void {
+    console.log('Padre: ngOnDestroy');
+  }
+
+  showChildren =signal(true);
+  toggleChildren(): void {
+    this.showChildren.update(value => !value);
+  }
 }

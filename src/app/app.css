@@ -5,3 +5,7 @@ body{
     padding-left: 1em;
     padding-right: 1em;
 }
+
+.row {
+    margin-top: 1rem;
+}

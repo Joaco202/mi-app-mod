@@ -15,7 +15,7 @@
                 <tr>
                   <th>
                     <button class="btn btn-primary" (click)="toggleImage()">
-                      <i class="bi bi-eye"></i>
+                      <!-- <i class="bi bi-eye"></i> -->
                       <i-bs name="eye"></i-bs>
                       {{ showImage? 'Ocultar' : 'Mostrar' }} Imagenes
                     </button>
@@ -44,7 +44,10 @@
                     <td>{{ producto.productCode }}</td>
                     <td>{{ producto.releaseDate }}</td>
                     <td>{{ producto.price }}</td>
-                    <td>{{ producto.starRating }}</td>
+                    <!-- <td>{{ producto.starRating }}</td> -->
+                     <td>
+                      <app-star [rating]="producto.starRating"></app-star>
+                     </td>
                   </tr>
                 }
               </tbody>
