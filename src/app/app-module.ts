@@ -8,9 +8,19 @@ import { App } from './app';
 import { NgxBootstrapIconsModule, allIcons } from 'ngx-bootstrap-icons';
 import { ProductList } from './product/product-list/product-list';
 import { Star } from './product/product-list/star/star';
+import { ImagePipe } from './shared/image-pipe';
 
 @NgModule({
-  imports: [BrowserModule, FormsModule, AppRoutingModule, NgxBootstrapIconsModule.pick(allIcons), App, ProductList, Star],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    AppRoutingModule,
+    NgxBootstrapIconsModule.pick(allIcons),
+    App,
+    ProductList,
+    Star,
+  ],
   providers: [provideBrowserGlobalErrorListeners()],
+  declarations: [ImagePipe],
 })
 export class AppModule {}
