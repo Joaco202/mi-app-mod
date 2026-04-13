@@ -2,12 +2,12 @@ import { Component, input, output } from '@angular/core';
 import { NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
 import { IProduct } from '../../product';
 import { Star } from './star/star';
-import { DatePipe } from '@angular/common';
+import { UpperCasePipe,LowerCasePipe, DatePipe, CurrencyPipe } from '@angular/common';
 import { ImagePipe } from '../../shared/image-pipe';
 
 @Component({
   selector: 'app-product-list',
-  imports: [Star, NgxBootstrapIconsModule, DatePipe, ImagePipe],
+  imports: [Star, NgxBootstrapIconsModule, UpperCasePipe,LowerCasePipe,CurrencyPipe, DatePipe, ImagePipe],
   standalone: true,
   templateUrl: './product-list.html',
   styleUrl: './product-list.css',

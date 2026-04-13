@@ -21,6 +21,5 @@ import { ImagePipe } from './shared/image-pipe';
     Star,
   ],
   providers: [provideBrowserGlobalErrorListeners()],
-  declarations: [ImagePipe],
 })
 export class AppModule {}
