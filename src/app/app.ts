@@ -6,6 +6,8 @@ import { ProductList } from './product/product-list/product-list';
 
 import { Product } from './product/product';
 
+import { Weather } from './services/weather';
+
 @Component({
   selector: 'app-root',
   imports: [FormsModule, ProductList],
@@ -20,10 +22,16 @@ export class App {
   
   products = signal<IProduct[]>([]);
 
-  constructor(private productService: Product) {}
+  weatherData = signal<any>(null);
+
+  constructor(private productService: Product, private weatherService: Weather) {}
 
   ngOnInit(): void{
     this.products.set(this.productService.getProducts());
+    this.weatherService.getWeather('Chillan', 'CL').subscribe((data: any) => {
+      console.log(data);
+      this.weatherData.set(data);
+    });
   }
 
   
