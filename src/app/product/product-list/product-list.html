@@ -48,6 +48,19 @@
                      <td>
                       <app-star [rating]="producto.starRating"></app-star>
                      </td>
+                     <td>
+                      <button class="btn btn-success" (click)="viewProduct(producto.productId)">
+                        <i class="bi bi-eye"></i>Ver
+                      </button>
+                      &nbsp;
+                      <button class="btn btn-warning" (click)="editProduct(producto.productId, producto)">
+                        <i class="bi bi-pencil"></i>Editar
+                      </button>
+                      &nbsp;
+                      <button class="btn btn-danger" (click)="deleteProduct(producto.productId)">
+                        <i class="bi bi-trash"></i>Borrar
+                      </button>
+                     </td>
                   </tr>
                 }
               </tbody>

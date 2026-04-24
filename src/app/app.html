@@ -17,9 +17,19 @@
   <div class="col-md-2">
     <input type="text" [ngModel]="listFilter()" (ngModelChange)="listFilter.set($event)">
   </div>
-  <div class="col-md-2">
+  <div class="col-md-4">
     Filtrado por: {{ listFilter() }}
   </div>
+  <div class="col-md-2">
+    <button class="btn btn-primary" (click)="abrirModal()">
+      Crear Producto
+    </button>
+  </div>
+  <br>
+  @if (isModalOpen()) {
+    <app-modal-add (close)="ocultarModal()"></app-modal-add>
+  }
+  <br>
   <div class="col-md-2">
     Dato recibido: {{ datoRecibido() }}
   </div>
@@ -35,6 +45,12 @@
 @if (showChildren()) {
   <app-product-list [datos]="filteredProducts()" (datoEmitido)="datoRecibido.set($event)"></app-product-list>
 }
+<br>
+<br>
+<app-product-list 
+  [datos]="filteredProducts()" 
+  (updatedProducts)="products.set($event)">
+</app-product-list>
 <br>
 <div class="card card-body">
   @if (weatherData()){

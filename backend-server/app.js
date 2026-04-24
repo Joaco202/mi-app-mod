@@ -4,7 +4,11 @@ var mysql = require('mysql');
 const bodyParser = require('body-parser');
 var fileUpload = require('express-fileupload');
 
+var cors = require('cors');
+
 var app = express();
+
+app.use(cors());
 
 app.use(fileUpload());
 app.use(bodyParser.json());
@@ -111,5 +115,36 @@ app.put('/uploads/productos/:id', (req, res) => {
                 mensaje: "archivo subido"
             })
         })
+    });
+});
+
+app.delete('/productos/:id', (req, res) => {
+    const sql = 'DELETE FROM productos WHERE productId = ?';
+    conn.query(sql, [req.params.id], (err, result) => {
+        if (err) throw err;
+        res.status(200).json({
+            ok: true,
+            mensaje: "Producto eliminado correctamente"
+        });
+    });
+});
+
+app.put('/productos/:id', (req, res) => {
+    const { name, code, date, price, description, rate } = req.body;
+    const sql = `UPDATE productos SET 
+                productName = ?, 
+                productCode = ?, 
+                releaseDate = ?, 
+                price = ?, 
+                description = ?, 
+                starRating = ? 
+                WHERE productId = ?`;
+    
+    conn .query(sql, [name, code, date, parseInt(price), description, rate, req.params.id], (err, result) => {
+        if (err) throw err;
+        res.status(200).json({
+            ok: true,
+            mensaje: "Producto actualizado correctamente"
+        });
     });
 });

@@ -1,40 +1,37 @@
 import { Injectable } from '@angular/core';
 import { IProduct } from '../product';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Product {
-  getProducts(): IProduct[]{
-    return[{
-      productId: 1,
-      productName: "AMD Ryzen 7 5800X",
-      productCode: "P0001",
-      releaseDate: "2024-02-04",
-      price: 20000,
-      description: "Para cosas",
-      starRating: 160,
-      imagenUrl: "/cpu.jpg"
-    },    
-    {
-      productId: 2,
-      productName: "NVIDIA GeForce GTX 1080-ti",
-      productCode: "P0002",
-      releaseDate: "2024-02-04",
-      price: 20000,
-      description: "Para cosas",
-      starRating: 200,
-      imagenUrl: "/1080ti.jpg"
-    },    
-    {
-      productId: 3,
-      productName: "Kingston Fury Beast (1 x 16 GB)",
-      productCode: "P0003",
-      releaseDate: "2024-06-04",
-      price: 20000,
-      description: "Para cosas",
-      starRating: 120,
-      imagenUrl: "/ram.jpg"
-    },]
+  constructor(private http: HttpClient) {}
+
+  getProducts(): Observable<IProduct[]> {
+    console.log('Fetching products from API...');
+    return this.http.get<IProduct[]>('http://localhost:3000/productos').pipe(
+      map((resp: any)=> resp.productos)
+      
+    );
+  }
+
+  generateProductCode(): string {
+    const randomNum = Math.floor(Math.random() * (100 - 10) + 10);
+    return `PROD-${randomNum.toString().padEnd(3, '0')}`;
+  }
+
+  saveProduct(product: IProduct): Observable<IProduct> {
+    return this.http.post<IProduct>('http://localhost:3000/productos', product);
+  }
+
+  deleteProduct(id: number): Observable<void> {
+    return this.http.delete<void>(`http://localhost:3000/productos/${id}`);
+  }
+
+  updateProduct(id: number, product: IProduct): Observable<IProduct> {
+    return this.http.put<IProduct>(`http://localhost:3000/productos/${id}`, product);
   }
 }
