@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 
 import { IProduct } from './product';
 import { ProductList } from './product/product-list/product-list';
+import { ModalAdd } from './services/modal-add/modal-add';
 
 import { Product } from './product/product';
 
@@ -11,7 +12,7 @@ import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  imports: [FormsModule, ProductList],
+  imports: [FormsModule, ProductList, ModalAdd],
   templateUrl: './app.html',
   standalone: true,
   styleUrl: './app.css'
@@ -90,6 +91,10 @@ abrirModal() {
 cerrarModal() {
   console.log('Cerrando modal');
   this.isModalOpen.set(false);
+}
+
+ocultarModal() {
+  this.cerrarModal();
 }
 }
 

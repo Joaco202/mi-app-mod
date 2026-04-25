@@ -9,7 +9,6 @@ import { NgxBootstrapIconsModule, allIcons } from 'ngx-bootstrap-icons';
 import { ProductList } from './product/product-list/product-list';
 import { Star } from './product/product-list/star/star';
 import { ImagePipe } from './shared/image-pipe';
-import { ModalAdd } from './services/modal-add/modal-add';
 
 @NgModule({
   imports: [
@@ -22,6 +21,5 @@ import { ModalAdd } from './services/modal-add/modal-add';
     Star,
   ],
   providers: [provideBrowserGlobalErrorListeners()],
-  declarations: [ModalAdd],
 })
 export class AppModule {}

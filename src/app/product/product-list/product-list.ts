@@ -87,5 +87,9 @@ export class ProductList {
       },
       complete: () => console.log('Actualización de producto completada')
     });
-  }   
+  }
+
+  viewProduct(productId: number) {
+    console.log('Viendo producto:', productId);
+  }
 }
