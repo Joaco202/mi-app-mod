@@ -1,21 +1,20 @@
-import { Component, input, output, inject } from '@angular/core';
+import { Component, input, output, inject, OnInit, OnChanges, OnDestroy } from '@angular/core';
 import { NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
-import { IProduct } from '../../product';
+import { IProduct } from '../../../../product';
 import { Star } from './star/star';
-import { UpperCasePipe,LowerCasePipe, DatePipe, CurrencyPipe } from '@angular/common';
-import { ImagePipe } from '../../shared/image-pipe';
+import { DatePipe } from '@angular/common';
 import { switchMap } from 'rxjs';
-import { Product } from '../product';
+import { Product } from '../../interfaces/product';
 
 
 @Component({
   selector: 'app-product-list',
-  imports: [Star, NgxBootstrapIconsModule, UpperCasePipe,LowerCasePipe,CurrencyPipe, DatePipe, ImagePipe],
+  imports: [Star, NgxBootstrapIconsModule, DatePipe],
   standalone: true,
   templateUrl: './product-list.html',
-  styleUrl: './product-list.css',
+  styleUrls: ['./product-list.css'],
 })
-export class ProductList {
+export class ProductList implements OnInit, OnChanges, OnDestroy {
   products = input<IProduct[]>([],{alias: 'datos'});
   updatedProducts = output<IProduct[]>();
   datoEmitido = output<string>();

@@ -26,9 +26,7 @@
     </button>
   </div>
   <br>
-  @if (isModalOpen()) {
-    <app-modal-add (close)="ocultarModal()"></app-modal-add>
-  }
+  <app-modal-add *ngIf="isModalOpen()" (close)="onModalClose($event)"></app-modal-add>
   <br>
   <div class="col-md-2">
     Dato recibido: {{ datoRecibido() }}
@@ -42,32 +40,11 @@
 </div>
 
 <br>
-@if (showChildren()) {
-  <app-product-list [datos]="filteredProducts()" (datoEmitido)="datoRecibido.set($event)"></app-product-list>
-}
+<app-product-list *ngIf="showChildren()" [datos]="filteredProducts()" (datoEmitido)="datoRecibido.set($event)"></app-product-list>
 <br>
 <br>
-<app-product-list 
-  [datos]="filteredProducts()" 
-  (updatedProducts)="products.set($event)">
+<app-product-list
+  [datos]="filteredProducts()"
+  (updatedProducts)="onProductsUpdated($event)">
 </app-product-list>
 <br>
-<div class="card card-body">
-  @if (weatherData()){
-    <h1 class="h4">
-      Datos del clima para {{weatherData().name}}
-      @for (i of weatherData().weather; track $index) {
-        <img src="http://openweathermap.org/img/w/{{ i.icon }}.png"
-        alt="{{ i.description }}"
-        width="100px"
-        height="100px">
-      }
-    </h1>
-    <p>Ciudad: {{ weatherData().name }}</p>
-    <p>Latitud: {{ weatherData().coord.lat }}</p>
-    <p>Longitud: {{ weatherData().coord.lon }}</p>
-    <p>Temperatura: {{ weatherData().main.temp }} °C</p>
-    <p>Presión: {{ weatherData().main.pressure }} hPa</p>
-    <p>Humedad: {{ weatherData().main.humidity }} %</p>
-  }
-</div>

@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
-import { IProduct } from '../product';
+import { IProduct } from '../../../product';
+import { signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import {map} from 'rxjs/operators';
+import { Observable, timer } from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Product {
+  products = signal<IProduct[]>([]);
+
   constructor(private http: HttpClient) {}
 
   getProducts(): Observable<IProduct[]> {
@@ -33,5 +36,13 @@ export class Product {
 
   updateProduct(id: number, product: IProduct): Observable<IProduct> {
     return this.http.put<IProduct>(`http://localhost:3000/productos/${id}`, product);
+  }
+
+  searchProduct(code: string) {
+    return timer(1000).pipe(switchMap(() => {
+      return this.http.get<any>(`http://localhost:3000/existeproducto/${code}`).pipe(
+        map((resp: any) => resp.data)
+      );
+    }));
   }
 }

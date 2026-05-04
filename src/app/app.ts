@@ -1,13 +1,12 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, OnInit, OnChanges, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { IProduct } from './product';
-import { ProductList } from './product/product-list/product-list';
-import { ModalAdd } from './services/modal-add/modal-add';
+import { ProductList } from './features/products/components/product-list/product-list';
+import { ModalAdd } from './features/products/components/modal-add/modal-add';
 
-import { Product } from './product/product';
+import { Product } from './features/products/interfaces/product';
 
-import { Weather } from './services/weather';
 import { switchMap } from 'rxjs';
 
 @Component({
@@ -15,28 +14,24 @@ import { switchMap } from 'rxjs';
   imports: [FormsModule, ProductList, ModalAdd],
   templateUrl: './app.html',
   standalone: true,
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
-export class App {
+export class App implements OnInit, OnChanges, OnDestroy {
   protected readonly title = signal('Empresa ACME');
   listFilter= signal('');
   datoRecibido = signal('');
-  
-  products = signal<IProduct[]>([]);
+  isModalOpen = signal(false);
 
-  weatherData = signal<any>(null);
-
-  constructor(private productService: Product, private weatherService: Weather) {}
+  constructor(private productService: Product) {}
 
   ngOnInit(): void{
     this.productService.getProducts().subscribe((products: IProduct[]) => {
-      this.products.set(products);
-      console.log(this.products());
+      this.productService.products.set(products);
     });
   }
   
   filteredProducts = computed(() => 
-    this.products().filter(p => 
+    this.productService.products().filter(p => 
       p.productName.toLowerCase().includes(this.listFilter().toLowerCase()))
   );
 
@@ -77,16 +72,14 @@ export class App {
     console.log('Producto guardado:', product);
     this.productService.saveProduct(product).pipe(
       switchMap(() => this.productService.getProducts())
-    ).subscribe((products => this.products.set(products)));
+    ).subscribe((products => this.productService.products.set(products)));
   }
 
-isModalOpen = signal(false);
-
-abrirModal() {
-  console.log('Abriendo modal');
-  this.isModalOpen.set(true);
-  console.log(this.isModalOpen());
-}
+  abrirModal() {
+    console.log('Abriendo modal');
+    this.isModalOpen.set(true);
+    console.log(this.isModalOpen());
+  }
 
 cerrarModal() {
   console.log('Cerrando modal');
@@ -96,6 +89,17 @@ cerrarModal() {
 ocultarModal() {
   this.cerrarModal();
 }
+
+onModalClose(products: IProduct[]) {
+  if (products && products.length) {
+    this.productService.products.set(products);
+  }
+  this.cerrarModal();
+}
+
+  onProductsUpdated(products: IProduct[]) {
+    this.productService.products.set(products);
+  }
 }
 
 

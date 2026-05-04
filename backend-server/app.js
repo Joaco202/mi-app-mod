@@ -35,6 +35,18 @@ app.get('/productos/:id', (req, res) => {
     });
 });
 
+app.get('/existeproducto/:code', (req, res) => {
+    const sql = 'SELECT * FROM productos WHERE productCode = ?';
+    conn.query(sql, [req.params.code], (err, results) => {
+        if (err) throw err;
+        res.status(200).json({
+            ok: true,
+            data: results[0],
+            existe: results.length > 0
+        });
+    });
+});
+
 //Endpoints
 app.get('/', (req, res, next) =>{
     res.status(200).json({
