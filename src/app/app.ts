@@ -1,9 +1,8 @@
 import { Component, computed, signal, OnInit, OnChanges, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 import { IProduct } from './product';
-import { ProductList } from './features/products/components/product-list/product-list';
-import { ModalAdd } from './features/products/components/modal-add/modal-add';
 
 import { Product } from './features/products/interfaces/product';
 
@@ -11,7 +10,7 @@ import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  imports: [FormsModule, ProductList, ModalAdd],
+  imports: [FormsModule, RouterLink, RouterOutlet],
   templateUrl: './app.html',
   standalone: true,
   styleUrls: ['./app.css']

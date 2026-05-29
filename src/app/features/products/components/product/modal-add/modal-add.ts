@@ -1,7 +1,7 @@
 import { Component, inject, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, AsyncValidatorFn } from '@angular/forms';
-import { Product } from '../../interfaces/product';
-import { IProduct } from '../../../../product';
+import { Product } from '../../../interfaces/product';
+import { IProduct } from '../../../../../product';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -16,8 +16,8 @@ export class ModalAdd {
   // Emit the refreshed products list after saving
   close = output<IProduct[]>();
 
-  private productService = inject(Product);
-  private fb = inject(FormBuilder);
+  private productService: Product = inject(Product);
+  private fb: FormBuilder = inject(FormBuilder);
 
   formProduct = this.fb.group({
     name: ['', Validators.required],
@@ -46,11 +46,11 @@ export class ModalAdd {
 
     this.productService.saveProduct(payload as any).subscribe({
       next: () => {
-        this.productService.getProducts().subscribe((products) => {
+        this.productService.getProducts().subscribe((products: IProduct[]) => {
           this.close.emit(products);
         });
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error guardando producto', err);
       }
     });
@@ -62,7 +62,7 @@ export class ModalAdd {
       console.log('cliente - code:', code);
       return this.productService.searchProduct(code)
         .pipe(
-          map(res => {
+          map((res: any) => {
             if (res) {
               console.log('Codigo encontrado:', res);
               return { codeExists: true };
