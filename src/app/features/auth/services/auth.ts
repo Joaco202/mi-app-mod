@@ -8,7 +8,13 @@ import { map } from 'rxjs/operators';
 export class Auth {
   private http = inject(HttpClient); // Inyección moderna
 
-  isAutenticated = signal(false);
+  isAutenticated = signal(!!localStorage.getItem('token'));
+
+  public logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuario');
+    this.isAutenticated.set(false); // Actualizar el estado de autenticación
+  }
 
   login(email: string, password: string) {
     let userLogin = { email: email, password: password };

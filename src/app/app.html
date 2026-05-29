@@ -10,6 +10,11 @@
 </head>
 
 <body>
+  @if (!authService.isAutenticated()) {
+    <app-login></app-login>
+  }
+
+  @if (authService.isAutenticated()) {
   <div class="d-flex" id="wrapper">
 
     <!-- Sidebar -->
@@ -78,13 +83,10 @@
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-                Dropdown
+                Opciones
               </a>
               <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
+                <a class="dropdown-item" style="cursor: pointer;" (click)="authService.logout()">Cerrar Sesión</a>
               </div>
             </li>
           </ul>
@@ -101,6 +103,7 @@
 
   </div>
   <!-- /#wrapper -->
+  } <!-- end @if isAutenticated -->
 
 </body>
 </html>

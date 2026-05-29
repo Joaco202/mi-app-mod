@@ -1,107 +1,21 @@
-import { Component, computed, signal, OnInit, OnChanges, OnDestroy, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Component, signal, inject } from '@angular/core';
+import { RouterOutlet, RouterLink } from '@angular/router';
 
-import { IProduct } from './product';
-
-import { Product } from './features/products/services/product';
-import { Auth } from './features/auth/services/auth';
-
-import { switchMap } from 'rxjs';
+import { Auth as authService } from './features/auth/services/auth';
+import { Login } from './features/auth/components/login/login';
 
 @Component({
-  selector: 'app-root',
-  imports: [FormsModule, RouterLink, RouterOutlet],
-  templateUrl: './app.html',
   standalone: true,
-  styleUrls: ['./app.css']
+  selector: 'app-root',
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    Login
+  ],
+  templateUrl: './app.html',
+  styleUrl: './app.css'
 })
-export class App implements OnInit, OnChanges, OnDestroy {
+export class App {
   protected readonly title = signal('Empresa ACME');
-  listFilter= signal('');
-  datoRecibido = signal('');
-  isModalOpen = signal(false);
-
-  authService = inject(Auth);
-
-  constructor(private productService: Product) {}
-
-  ngOnInit(): void{
-    this.productService.getProducts().subscribe((products: IProduct[]) => {
-      this.productService.products.set(products);
-    });
-  }
-  
-  filteredProducts = computed(() => 
-    this.productService.products().filter(p => 
-      p.productName.toLowerCase().includes(this.listFilter().toLowerCase()))
-  );
-
-  /*constructor() {
-    console.log('Padre: constructor');
-  }
-
-  ngOnInit():void {
-    console.log('Padre: ngOnInit');
-  }*/
-
-  ngOnChanges():void {
-    console.log('Padre: ngOnChanges');
-  }
-
-  ngOnDestroy():void {
-    console.log('Padre: ngOnDestroy');
-  }
-
-  showChildren =signal(true);
-  toggleChildren(): void {
-    this.showChildren.update(value => !value);
-  }
-
-  crearProducto() {
-    let datos: any = {
-      name: `Producto Nuevo ${Math.round(Math.random() * (100 - 1) + 1)}`,
-      code: this.productService.generateProductCode(),
-      date: '2024-01-01',
-      price: Math.round(Math.random() * (40000 - 10000) + 10000),
-      description: 'Descripción del producto nuevo',
-      rate: Math.round(Math.random() * (200 - 1) + 1),
-      image: 'ACME_logo.png'
-    }
-  }
-
-  guardarProdcuto(product: IProduct) {
-    console.log('Producto guardado:', product);
-    this.productService.saveProduct(product).pipe(
-      switchMap(() => this.productService.getProducts())
-    ).subscribe((products => this.productService.products.set(products)));
-  }
-
-  abrirModal() {
-    console.log('Abriendo modal');
-    this.isModalOpen.set(true);
-    console.log(this.isModalOpen());
-  }
-
-cerrarModal() {
-  console.log('Cerrando modal');
-  this.isModalOpen.set(false);
+  public authService = inject(authService);
 }
-
-ocultarModal() {
-  this.cerrarModal();
-}
-
-onModalClose(products: IProduct[]) {
-  if (products && products.length) {
-    this.productService.products.set(products);
-  }
-  this.cerrarModal();
-}
-
-  onProductsUpdated(products: IProduct[]) {
-    this.productService.products.set(products);
-  }
-}
-
-
