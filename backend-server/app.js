@@ -1,10 +1,13 @@
 var express = require('express');
 var mysql = require('mysql');
+var jwt = require('jsonwebtoken');
+let SEED = "esta-es-una-semilla-para-generar-el-token";
 
 const bodyParser = require('body-parser');
 var fileUpload = require('express-fileupload');
 
 var cors = require('cors');
+const bcrypt = require('bcrypt');
 
 var app = express();
 
@@ -13,6 +16,33 @@ app.use(cors());
 app.use(fileUpload());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(function(req, res, next){
+    if (req.path === '/login') {
+        return next(); // Skip token verification for login route
+    }
+
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({
+            ok: false,
+            mensaje: 'Token no proporcionado'
+        });
+    }
+
+    jwt.verify(token, SEED, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({
+                ok: false,
+                mensaje: 'Token no válido'
+            });
+        }
+        req.usuario = decoded.usuario;
+        next();
+    });
+});
 
 const conn = mysql.createConnection({
     host: 'localhost',
@@ -82,6 +112,55 @@ app.post('/productos', (req, res) => {
             ok: true,
             mensaje: "Producto añadido correctamente"
         });
+    });
+});
+
+app.post('/usuarios', (req, res) => {
+    const { name, email, img, role } = req.body;
+    let hashedPassword = bcrypt.hashSync(req.body.password, 10);
+
+    const sql = `INSERT INTO usuarios (userName, userEmail, userPassword, userImg, userRole) 
+                VALUES (?, ?, ?, ?, ?)`;
+    conn.query(sql, [name, email, hashedPassword, img, role], (err, result) => {
+        if (err) throw err;
+        res.status(201).json({
+            ok: true,
+            mensaje: 'Usuario registrado correctamente'
+        });
+    });
+});
+
+app.post('/login', (req, res) => {
+    const { email } = req.body;
+    let hashedPassword = bcrypt.hashSync(req.body.password, 10);
+    const sql = 'SELECT * FROM usuarios WHERE userEmail = ?';
+
+    conn.query(sql, [email], (err, results) => {
+        if (err) throw err;
+
+        if (results.length === 0) {
+            return res.status(404).json({
+                ok: false,
+                mensaje: 'Usuario no encontrado'
+            });
+        } else {
+            const user = results[0];
+            const passwordMatch = bcrypt.compareSync(req.body.password, user.userPassword);
+            if (!passwordMatch) {
+                return res.status(401).json({
+                    ok: false,
+                    mensaje: 'Contraseña incorrecta'
+                });
+            }
+
+            const token = jwt.sign({ usuario: user }, SEED, { expiresIn: 14400 });
+            res.status(200).json({
+                ok: true,
+                mensaje: 'Login exitoso',
+                usuario: user,
+                token: token
+            });
+        }
     });
 });
 

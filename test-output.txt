@@ -1,0 +1,64 @@
+[33m>[39m Building...
+[32m√[39m Building...
+[1mInitial chunk files[22m                                                       [2m | [22m[1mNames[22m                                                                  [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m                                                                [2m | [22m[2mstyles[22m                                                                 [2m | [22m[36m103.83 kB[39m[2m | [22m
+[32mspec-app-app.js[39m                                                           [2m | [22m[2mspec-app-app[22m                                                           [2m | [22m [36m21.85 kB[39m[2m | [22m
+[32mspec-app-features-products-components-product-product-list-product-list.js[39m[2m | [22m[2mspec-app-features-products-components-product-product-list-product-list[22m[2m | [22m [36m14.80 kB[39m[2m | [22m
+[32mspec-app-features-products-components-product-modal-add-modal-add.js[39m      [2m | [22m[2mspec-app-features-products-components-product-modal-add-modal-add[22m      [2m | [22m [36m13.99 kB[39m[2m | [22m
+[32mchunk-RSTWSNOR.js[39m                                                         [2m | [22m[2m-[22m                                                                      [2m | [22m  [36m4.75 kB[39m[2m | [22m
+[32mspec-app-features-auth-components-login-login.js[39m                          [2m | [22m[2mspec-app-features-auth-components-login-login[22m                          [2m | [22m  [36m4.39 kB[39m[2m | [22m
+[32mchunk-ZMB3OSJL.js[39m                                                         [2m | [22m[2m-[22m                                                                      [2m | [22m  [36m3.51 kB[39m[2m | [22m
+[32mchunk-4QTG3QGL.js[39m                                                         [2m | [22m[2m-[22m                                                                      [2m | [22m  [36m1.90 kB[39m[2m | [22m
+[32mspec-app-features-products-components-product-product.js[39m                  [2m | [22m[2mspec-app-features-products-components-product-product[22m                  [2m | [22m  [36m1.79 kB[39m[2m | [22m
+[32mspec-app-services-weather.js[39m                                              [2m | [22m[2mspec-app-services-weather[22m                                              [2m | [22m  [36m1.50 kB[39m[2m | [22m
+[32minit-testbed.js[39m                                                           [2m | [22m[2minit-testbed[22m                                                           [2m | [22m  [36m1.21 kB[39m[2m | [22m
+[32mspec-app-shared-image-pipe.js[39m                                             [2m | [22m[2mspec-app-shared-image-pipe[22m                                             [2m | [22m[36m953 bytes[39m[2m | [22m
+[32mvitest-mock-patch.js[39m                                                      [2m | [22m[2mvitest-mock-patch[22m                                                      [2m | [22m[36m704 bytes[39m[2m | [22m
+[32mspec-app-features-products-components-product-product-list-star-star.js[39m   [2m | [22m[2mspec-app-features-products-components-product-product-list-star-star[22m   [2m | [22m[36m681 bytes[39m[2m | [22m
+[32mspec-app-features-products-interfaces-product.js[39m                          [2m | [22m[2mspec-app-features-products-interfaces-product[22m                          [2m | [22m[36m486 bytes[39m[2m | [22m
+
+[1m [22m                                                                         [2m | [22m[1mInitial total[22m                                                          [2m | [22m[1m176.35 kB[22m
+
+Application bundle generation complete. [1.288 seconds] - 2026-05-29T07:12:03.213Z
+
+
+[1m[46m RUN [49m[22m [36mv4.1.2 [39m[90mC:/Users/joako/Documents/GitHub/mi-app-mod[39m
+
+ [32m✓[39m [30m[42m mi-app-mod [49m[39m src/app/shared/image-pipe.spec.ts [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m [30m[42m mi-app-mod [49m[39m src/app/services/weather.spec.ts [2m([22m[2m1 test[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m [30m[42m mi-app-mod [49m[39m src/app/features/products/interfaces/product.spec.ts [2m([22m[2m1 test[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m [30m[42m mi-app-mod [49m[39m src/app/features/products/components/product/product.spec.ts [2m([22m[2m1 test[22m[2m)[22m[32m 24[2mms[22m[39m
+[90mstderr[2m | src/app/features/products/components/product/product-list/star/star.spec.ts[2m > [22m[2mStar[2m > [22m[2mshould create
+[22m[39mNG0955: The provided track expression resulted in duplicated keys for a given collection. Adjust the tracking expression such that it uniquely identifies all the items in the collection. Duplicated keys were: 
+key "1" at index "0" and "1", 
+key "1" at index "1" and "2". Find more at https://v21.angular.dev/errors/NG0955
+
+ [32m✓[39m [30m[42m mi-app-mod [49m[39m src/app/features/products/components/product/product-list/star/star.spec.ts [2m([22m[2m1 test[22m[2m)[22m[32m 37[2mms[22m[39m
+ [32m✓[39m [30m[42m mi-app-mod [49m[39m src/app/features/auth/components/login/login.spec.ts [2m([22m[2m1 test[22m[2m)[22m[32m 37[2mms[22m[39m
+[90mstdout[2m | src/app/features/products/components/product/product-list/product-list.spec.ts[2m > [22m[2mProductList[2m > [22m[2mshould create
+[22m[39mHijo: constructor
+
+[90mstdout[2m | src/app/features/products/components/product/product-list/product-list.spec.ts[2m > [22m[2mProductList[2m > [22m[2mshould create
+[22m[39mHijo: ngOnInit
+
+[90mstdout[2m | src/app/features/products/components/product/product-list/product-list.spec.ts[2m > [22m[2mProductList[2m > [22m[2mshould create
+[22m[39mHijo: ngOnDestroy
+
+ [32m✓[39m [30m[42m mi-app-mod [49m[39m src/app/features/products/components/product/product-list/product-list.spec.ts [2m([22m[2m1 test[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m [30m[42m mi-app-mod [49m[39m src/app/features/products/components/product/modal-add/modal-add.spec.ts [2m([22m[2m1 test[22m[2m)[22m[32m 33[2mms[22m[39m
+[90mstdout[2m | src/app/app.spec.ts[2m > [22m[2mApp[2m > [22m[2mshould create the app
+[22m[39mPadre: ngOnDestroy
+
+[90mstdout[2m | src/app/app.spec.ts[2m > [22m[2mApp[2m > [22m[2mshould render title
+[22m[39mFetching products from API...
+
+[90mstdout[2m | src/app/app.spec.ts[2m > [22m[2mApp[2m > [22m[2mshould render title
+[22m[39mPadre: ngOnDestroy
+
+ [32m✓[39m [30m[42m mi-app-mod [49m[39m src/app/app.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 59[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m9 passed[39m[22m[90m (9)[39m
+[2m      Tests [22m [1m[32m10 passed[39m[22m[90m (10)[39m
+[2m   Start at [22m 03:12:03
+[2m   Duration [22m 1.23s[2m (transform 252ms, setup 2.66s, import 468ms, tests 243ms, environment 5.54s)[22m
+

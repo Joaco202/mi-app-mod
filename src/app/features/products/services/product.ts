@@ -3,7 +3,7 @@ import { IProduct } from '../../../product';
 import { signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, timer } from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',

@@ -1,10 +1,11 @@
-import { Component, computed, signal, OnInit, OnChanges, OnDestroy } from '@angular/core';
+import { Component, computed, signal, OnInit, OnChanges, OnDestroy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterOutlet } from '@angular/router';
 
 import { IProduct } from './product';
 
-import { Product } from './features/products/interfaces/product';
+import { Product } from './features/products/services/product';
+import { Auth } from './features/auth/services/auth';
 
 import { switchMap } from 'rxjs';
 
@@ -20,6 +21,8 @@ export class App implements OnInit, OnChanges, OnDestroy {
   listFilter= signal('');
   datoRecibido = signal('');
   isModalOpen = signal(false);
+
+  authService = inject(Auth);
 
   constructor(private productService: Product) {}
 

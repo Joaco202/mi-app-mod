@@ -4,7 +4,7 @@ import { IProduct } from '../../../../../product';
 import { Star } from './star/star';
 import { DatePipe } from '@angular/common';
 import { switchMap } from 'rxjs';
-import { Product } from '../../../interfaces/product';
+import { Product } from '../../../services/product';
 
 
 @Component({

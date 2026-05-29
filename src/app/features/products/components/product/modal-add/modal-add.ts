@@ -1,6 +1,6 @@
 import { Component, inject, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, AsyncValidatorFn } from '@angular/forms';
-import { Product } from '../../../interfaces/product';
+import { Product } from '../../../services/product';
 import { IProduct } from '../../../../../product';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';

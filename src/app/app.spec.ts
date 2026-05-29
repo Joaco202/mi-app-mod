@@ -1,15 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { App } from './app';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        RouterModule.forRoot([])
-      ],
-      declarations: [
+        RouterModule.forRoot([]),
         App
+      ],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
   });
@@ -24,6 +28,6 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, mi-app-mod');
+    expect(compiled.querySelector('#titulo')?.textContent).toContain('Empresa ACME');
   });
 });
