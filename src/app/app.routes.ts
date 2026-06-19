@@ -26,5 +26,5 @@ export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 
   // Siempre al final para manejar rutas no definidas
-  { path: '**', component: PageNotFound }
+  { path: '**', component: PageNotFound, canActivate: [loginGuard] }
 ];
