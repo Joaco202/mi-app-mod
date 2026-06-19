@@ -1,0 +1,27 @@
+.omb_login {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.omb_login .omb_socialButtons a {
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+}
+
+.omb_login .omb_socialButtons a:hover {
+  filter: brightness(0.9);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.omb_login .input-group-text {
+  border-right: none;
+}
+
+.omb_login .form-control {
+  border-left: none;
+}
+
+.omb_login .form-control:focus {
+  border-color: #dee2e6;
+  box-shadow: none;
+}

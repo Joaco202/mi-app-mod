@@ -11,10 +11,9 @@
 
 <body>
   @if (!authService.isAutenticated()) {
-    <app-login></app-login>
-  }
-
-  @if (authService.isAutenticated()) {
+  <!-- Login page - full width, outside any wrapper -->
+  <router-outlet></router-outlet>
+  } @else {
   <div class="d-flex" id="wrapper">
 
     <!-- Sidebar -->
@@ -44,8 +43,8 @@
             </a>
             <ul class="sub-menu collapse" id="productos">
               <li><a [routerLink]="['products']"><i class="bi bi-cart-fill"></i>Administrar</a></li>
-              <li><a href="">Ver fichas</a></li>
-              <li><a href=""> Informes</a></li>
+              <li><a [routerLink]="['numbers']">Ver fichas</a></li>
+              <li><a [routerLink]="['products-pagination']"> Informes</a></li>
             </ul>
           </li>
           <li> <a href="#"><i class="bi bi-speedometer"></i><span class="nav-label">Dashboard</span></a> </li>
@@ -53,8 +52,8 @@
                 class="bi bi-person"></i> <span class="nav-label">Usuarios</span><span
                 class="bi bi-chevron-right"></span></a>
             <ul class="sub-menu collapse" id="usuarios">
-              <li><a href=""> Administrar</a></li>
-              <li><a href=""> Ver fichas</a></li>
+              <li><a [routerLink]="['users']"> Administrar</a></li>
+              <li><a [routerLink]="['maps']"> Ver mapa</a></li>
               <li><a href=""> Informes</a></li>
             </ul>
           </li>
@@ -62,7 +61,6 @@
       </div>
 
     </div>
-
     <!-- /#sidebar-wrapper -->
 
     <!-- Page Content -->
@@ -86,7 +84,10 @@
                 Opciones
               </a>
               <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" style="cursor: pointer;" (click)="authService.logout()">Cerrar Sesión</a>
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" (click)="authService.logout()">Logout</a>
               </div>
             </li>
           </ul>
@@ -98,12 +99,13 @@
       <div class="container-fluid">
         <router-outlet></router-outlet>
       </div>
+
     </div>
     <!-- /#page-content-wrapper -->
 
   </div>
   <!-- /#wrapper -->
-  } <!-- end @if isAutenticated -->
+  }
 
 </body>
 </html>
