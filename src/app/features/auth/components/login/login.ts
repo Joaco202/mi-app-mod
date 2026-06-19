@@ -1,16 +1,30 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Auth } from '../../services/auth';
+import { LoginService } from '../../services/login.service';
+import { SocialAuthService, GoogleSigninButtonModule, SocialUser } from '@abacritt/angularx-social-login';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, GoogleSigninButtonModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
   private formBuilder = inject(FormBuilder);    // Inyección moderna
-  private loginService = inject(Auth);          // Inyección moderna
+  private loginService = inject(LoginService);          // Inyección moderna
+  private socialAuthService = inject(SocialAuthService); // Inyección moderna
+
+  ngOnInit(): void {
+    this.socialAuthService.authState.subscribe((user: SocialUser | null) => {
+      if (user) {
+        this.loginService.loginGoogle(user.idToken!).subscribe({
+          next: (data)=>{
+            console.log('Google login succesful',data);
+          }
+        })
+      }
+    });
+  }
 
   loginForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],

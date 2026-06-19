@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { App } from './app';
-import { Auth } from './features/auth/services/auth';
+import { LoginService } from './features/auth/services/login.service';
 
 describe('App', () => {
   beforeEach(async () => {
@@ -26,7 +26,7 @@ describe('App', () => {
   });
 
   it('should render title', async () => {
-    const auth = TestBed.inject(Auth);
+    const auth = TestBed.inject(LoginService);
     auth.isAutenticated.set(true);
 
     const fixture = TestBed.createComponent(App);

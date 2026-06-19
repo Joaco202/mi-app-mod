@@ -1,17 +1,6 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { importProvidersFrom, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
 import { App } from './app/app';
-import { NgxBootstrapIconsModule, allIcons } from 'ngx-bootstrap-icons';
-import { routes } from './app/app.routes';
+import { appConfig } from './app/app.config';
 
-bootstrapApplication(App, {
-  providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
-    provideHttpClient(),
-    importProvidersFrom(NgxBootstrapIconsModule.pick(allIcons)),
-  ],
-})
+bootstrapApplication(App, appConfig)
   .catch(err => console.error(err));

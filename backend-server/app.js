@@ -1,3 +1,27 @@
+const fs = require('fs');
+const path = require('path');
+try {
+    const envPath = path.join(__dirname, '.env.dev');
+    if (fs.existsSync(envPath)) {
+        const envConfig = fs.readFileSync(envPath, 'utf8');
+        envConfig.split('\n').forEach(line => {
+            const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+            if (match) {
+                const key = match[1];
+                let value = match[2] || '';
+                if (value.length > 0 && value.charAt(0) === '"' && value.charAt(value.length - 1) === '"') {
+                    value = value.substring(1, value.length - 1);
+                } else if (value.length > 0 && value.charAt(0) === "'" && value.charAt(value.length - 1) === "'") {
+                    value = value.substring(1, value.length - 1);
+                }
+                process.env[key] = value.trim();
+            }
+        });
+    }
+} catch (e) {
+    console.error('Error loading .env.dev file:', e);
+}
+
 var express = require('express');
 var mysql = require('mysql');
 var jwt = require('jsonwebtoken');
@@ -272,3 +296,91 @@ app.put('/productos/:id', (req, res) => {
         });
     });
 });
+
+const {OAuth2Client} = require('google-auth-library');
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+
+//Login Google
+app.post('/google-login', async (req,res)=>{
+    const googletoken = req.body.googletoken || req.body.token;
+    console.log('Token recibido: ' + googletoken);
+    try {
+        const{name, email, picture} = await verifyGoogleToken(googletoken);
+        conn.query('SELECT * FROM usuarios WHERE userEmail=?', [email], (err,results)=>{
+            if(err){
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: "Error al obtener datos del usuario",
+                    error: err
+                });
+            }
+            if(results.length === 0 || !results.length){
+                console.log("El usuario no existe en la BD, vamos a crearlo");
+                let datosUsuario = {
+                    userName: name,
+                    userEmail: email,
+                    userImg: picture
+                };
+                conn.query('INSERT INTO usuarios SET ?', datosUsuario, (err, insertResult)=>{
+                    if(err){
+                        return res.status(500).json({
+                            ok: false,
+                            mensaje: "Error al crear usuario",
+                            error: err
+                        });
+                    }
+                    // Buscar el usuario recién creado para obtener sus campos por defecto e ID
+                    conn.query('SELECT * FROM usuarios WHERE userId = ?', [insertResult.insertId], (err, newResults)=>{
+                        if(err){
+                            return res.status(500).json({
+                                ok: false,
+                                mensaje: "Error al recuperar el usuario creado",
+                                error: err
+                            });
+                        }
+                        const user = newResults[0];
+                        const token = jwt.sign({ usuario: user }, SEED, { expiresIn: 14400 });
+                        return res.status(200).json({
+                            ok: true,
+                            mensaje: "Login exitoso",
+                            usuario: user,
+                            token: token
+                        });
+                    });
+                });
+            }else{
+                console.log("Usuario encontrado");
+                const user = results[0];
+                const token = jwt.sign({ usuario: user}, SEED, { expiresIn: 14400 });
+                return res.status(200).json({
+                    ok: true,
+                    mensaje: "Login exitoso",
+                    usuario: user,
+                    token: token
+                });
+            }
+        })   
+    } catch (error) {
+        res.status(401).json({
+            ok: false,
+            mensaje: "Token no valido",
+            error: error
+        });
+    }
+});
+
+//Verificar el token de Google
+async function verifyGoogleToken(token){
+    const client = new OAuth2Client(GOOGLE_CLIENT_ID);
+    const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    console.log(payload);
+    return {
+        name: payload.name,
+        email: payload.email,
+        picture: payload.picture
+    };
+}
