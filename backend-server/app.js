@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+
 try {
     const envPath = path.join(__dirname, '.env.dev');
     if (fs.existsSync(envPath)) {
@@ -22,6 +23,21 @@ try {
     console.error('Error loading .env.dev file:', e);
 }
 
+const nodemailer = require("nodemailer");
+const { google } = require('googleapis');
+
+const EMAIL_CLIENT_ID = process.env.EMAIL_CLIENT_ID;
+const EMAIL_CLIENT_SECRET = process.env.EMAIL_CLIENT_SECRET;
+const EMAIL_REDIRECT_URI = process.env.EMAIL_REDIRECT_URI;
+const EMAIL_REFRESH_TOKEN = process.env.EMAIL_REFRESH_TOKEN;
+
+const OAuth2 = google.auth.OAuth2;
+const oauth2Client = new OAuth2(
+    EMAIL_CLIENT_ID,
+    EMAIL_CLIENT_SECRET,
+    EMAIL_REDIRECT_URI
+);
+
 var express = require('express');
 var mysql = require('mysql');
 var jwt = require('jsonwebtoken');
@@ -41,9 +57,9 @@ app.use(fileUpload());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(function(req, res, next){
-    if (req.path === '/login') {
-        return next(); // Skip token verification for login route
+app.use(function (req, res, next) {
+    if (req.path === '/login' || req.path === '/google-login' || req.path === '/email-test') {
+        return next(); // Skip token verification for these public routes
     }
 
     const authHeader = req.headers['authorization'];
@@ -90,7 +106,7 @@ conn.on('error', (err) => {
 app.get('/productos/:id', (req, res) => {
     const id = req.params.id;
     const sql = 'SELECT * FROM productos WHERE productId=?';
-    conn.query(sql, [id], (err, results)=>{
+    conn.query(sql, [id], (err, results) => {
         if (err) throw err;
         res.status(200).json({
             ok: true,
@@ -112,14 +128,14 @@ app.get('/existeproducto/:code', (req, res) => {
 });
 
 //Endpoints
-app.get('/', (req, res, next) =>{
+app.get('/', (req, res, next) => {
     res.status(200).json({
         ok: true,
         mensaje: "Peticion realizada correctamente"
     })
 });
 
-app.listen(3000, ()=>{
+app.listen(3000, () => {
     console.log('Puerto 3000 funcionando');
 })
 
@@ -141,7 +157,7 @@ app.post('/productos', (req, res) => {
                 error: err.message
             });
         }
-        
+
         res.status(201).json({
             ok: true,
             mensaje: "Producto añadido correctamente"
@@ -222,7 +238,7 @@ app.post('/login', (req, res) => {
 });
 
 app.put('/uploads/productos/:id', (req, res) => {
-    if(!req.files || Object.keys(req.files).length === 0) {
+    if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).json({
             ok: false,
             mensaje: 'No se ha seleccionado ningun archivo, tonoto'
@@ -233,7 +249,7 @@ app.put('/uploads/productos/:id', (req, res) => {
     const fileExtension = file.name.split('.').pop().toLowerCase();
     const allowedExtensions = ['png', 'jpg', 'jpeg', 'gif'];
 
-    if(!allowedExtensions.includes(fileExtension)) {
+    if (!allowedExtensions.includes(fileExtension)) {
         return res.status(400).json({
             ok: false,
             mensaje: "Tipo de archivo no permitido"
@@ -247,7 +263,7 @@ app.put('/uploads/productos/:id', (req, res) => {
     console.log(uploadPath);
 
     file.mv(uploadPath, (err) => {
-        if (err){
+        if (err) {
             return res.status(500).json({
                 ok: false,
                 mensaje: 'Error al subir archivo',
@@ -287,8 +303,8 @@ app.put('/productos/:id', (req, res) => {
                 description = ?, 
                 starRating = ? 
                 WHERE productId = ?`;
-    
-    conn .query(sql, [name, code, date, parseInt(price), description, rate, req.params.id], (err, result) => {
+
+    conn.query(sql, [name, code, date, parseInt(price), description, rate, req.params.id], (err, result) => {
         if (err) throw err;
         res.status(200).json({
             ok: true,
@@ -297,32 +313,33 @@ app.put('/productos/:id', (req, res) => {
     });
 });
 
-const {OAuth2Client} = require('google-auth-library');
+const { OAuth2Client } = require('google-auth-library');
+const { generate } = require('rxjs');
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
 //Login Google
-app.post('/google-login', async (req,res)=>{
+app.post('/google-login', async (req, res) => {
     const googletoken = req.body.googletoken || req.body.token;
     console.log('Token recibido: ' + googletoken);
     try {
-        const{name, email, picture} = await verifyGoogleToken(googletoken);
-        conn.query('SELECT * FROM usuarios WHERE userEmail=?', [email], (err,results)=>{
-            if(err){
+        const { name, email, picture } = await verifyGoogleToken(googletoken);
+        conn.query('SELECT * FROM usuarios WHERE userEmail=?', [email], (err, results) => {
+            if (err) {
                 return res.status(500).json({
                     ok: false,
                     mensaje: "Error al obtener datos del usuario",
                     error: err
                 });
             }
-            if(results.length === 0 || !results.length){
+            if (results.length === 0 || !results.length) {
                 console.log("El usuario no existe en la BD, vamos a crearlo");
                 let datosUsuario = {
                     userName: name,
                     userEmail: email,
                     userImg: picture
                 };
-                conn.query('INSERT INTO usuarios SET ?', datosUsuario, (err, insertResult)=>{
-                    if(err){
+                conn.query('INSERT INTO usuarios SET ?', datosUsuario, (err, insertResult) => {
+                    if (err) {
                         return res.status(500).json({
                             ok: false,
                             mensaje: "Error al crear usuario",
@@ -330,8 +347,8 @@ app.post('/google-login', async (req,res)=>{
                         });
                     }
                     // Buscar el usuario recién creado para obtener sus campos por defecto e ID
-                    conn.query('SELECT * FROM usuarios WHERE userId = ?', [insertResult.insertId], (err, newResults)=>{
-                        if(err){
+                    conn.query('SELECT * FROM usuarios WHERE userId = ?', [insertResult.insertId], (err, newResults) => {
+                        if (err) {
                             return res.status(500).json({
                                 ok: false,
                                 mensaje: "Error al recuperar el usuario creado",
@@ -348,10 +365,10 @@ app.post('/google-login', async (req,res)=>{
                         });
                     });
                 });
-            }else{
+            } else {
                 console.log("Usuario encontrado");
                 const user = results[0];
-                const token = jwt.sign({ usuario: user}, SEED, { expiresIn: 14400 });
+                const token = jwt.sign({ usuario: user }, SEED, { expiresIn: 14400 });
                 return res.status(200).json({
                     ok: true,
                     mensaje: "Login exitoso",
@@ -359,7 +376,7 @@ app.post('/google-login', async (req,res)=>{
                     token: token
                 });
             }
-        })   
+        })
     } catch (error) {
         res.status(401).json({
             ok: false,
@@ -370,7 +387,7 @@ app.post('/google-login', async (req,res)=>{
 });
 
 //Verificar el token de Google
-async function verifyGoogleToken(token){
+async function verifyGoogleToken(token) {
     const client = new OAuth2Client(GOOGLE_CLIENT_ID);
     const ticket = await client.verifyIdToken({
         idToken: token,
@@ -384,3 +401,62 @@ async function verifyGoogleToken(token){
         picture: payload.picture
     };
 }
+
+oauth2Client.setCredentials({
+    refresh_token: EMAIL_REFRESH_TOKEN,
+});
+
+const accessToken = oauth2Client.getAccessToken();
+
+const smptTransport = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        type: 'OAuth2',
+        user: "joaquin.contreras2001@alumnos.ubiobio.cl",
+        clientId: EMAIL_CLIENT_ID,
+        clientSecret: EMAIL_CLIENT_SECRET,
+        refreshToken: EMAIL_REFRESH_TOKEN,
+        accessToken: accessToken
+    }
+});
+
+// Enviar Email de Prueba
+app.post('/email-test', (req, res) => {
+    let msg = `<h3>
+        <span style="background-color: #ffcc00;">
+            Envío de Email con NodeJS - Nodemailer y GMail
+        </span>
+    </h3>
+    <p>Este es un <strong> email de ejemplo </strong> utilizando
+        <span style="color: #ff0000;">Nodemailer</span> y <em>NodeJS</em>.
+    </p>
+    <ul>
+        <li>Permite formato HTML</li>
+        <li>Permite adjuntar archivos</li>
+        <li>Se utiliza una cuenta GMail configurada con OAuth2</li>
+    </ul>`;
+
+    const { email_adress } = req.body;
+
+    const mailOptions = {
+        from: "Asignatura Angular",
+        to: email_adress,
+        subject: "Email de Prueba NodeJS - Nodemailer",
+        generateTextFromHTML: true,
+        html: msg
+    };
+
+    smptTransport.sendMail(mailOptions, (err, response) => {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+        console.log(response);
+        smptTransport.close();
+        res.status(200).json({
+            ok: true,
+            mensaje: 'Email enviado correctamente',
+        });
+    });
+});
+
