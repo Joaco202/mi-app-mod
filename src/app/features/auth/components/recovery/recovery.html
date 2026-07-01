@@ -1,0 +1,142 @@
+<div class="container my-5">
+  <div class="omb_recovery">
+    <div class="card shadow-sm border-0 p-4" style="border-radius: 12px; background-color: #ffffff;">
+      <!-- Title -->
+      <h3 class="text-center mb-4" style="font-weight: 600; color: #333;">
+        <i class="bi bi-shield-lock-fill text-primary me-2"></i>Recuperar Cuenta
+      </h3>
+
+      <!-- Step 1: Request Recovery Code -->
+      @if (!codeSent()) {
+        <p class="text-muted text-center mb-4" style="font-size: 14px;">
+          Ingresa tu dirección de correo electrónico y te enviaremos un código de verificación para restablecer tu contraseña.
+        </p>
+
+        <form [formGroup]="requestForm" (ngSubmit)="sendResetCode()" autocomplete="off">
+          <!-- Email Input -->
+          <div class="input-group mb-3">
+            <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope-fill text-muted">&nbsp;</i></span>
+            <input formControlName="email" type="email" class="form-control border-start-0 py-2" placeholder="Correo Electrónico">
+          </div>
+          @if (requestForm.get('email')?.touched && requestForm.get('email')?.invalid) {
+            <div class="text-danger mb-3" style="font-size: 13px;">
+              @if (requestForm.get('email')?.errors?.['required']) {
+                El correo es obligatorio.
+              } @else if (requestForm.get('email')?.errors?.['email']) {
+                Ingresa un formato de correo válido.
+              }
+            </div>
+          }
+
+          <!-- Alert message -->
+          @if (errorMessage()) {
+            <div class="alert alert-danger py-2 px-3 mb-3 d-flex align-items-center" role="alert" style="font-size: 14px; border-radius: 8px;">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              <div>{{ errorMessage() }}</div>
+            </div>
+          }
+
+          <button class="btn btn-lg btn-primary w-100 py-2 mt-3" type="submit" [disabled]="requestForm.invalid || loading()" style="border-radius: 8px; font-weight: 500; font-size: 16px;">
+            @if (loading()) {
+              <span class="spinner-border spinner-border-sm role-status me-2" aria-hidden="true"></span>
+              Enviando...
+            } @else {
+              Enviar Código de Recuperación
+            }
+          </button>
+
+          <div class="text-center mt-4">
+            <a routerLink="/login" class="text-decoration-none d-inline-flex align-items-center" style="color: #0d6efd; font-weight: 500; font-size: 14px;">
+              <i class="bi bi-arrow-left me-2"></i> Volver al Inicio de Sesión
+            </a>
+          </div>
+        </form>
+      }
+
+      <!-- Step 2: Reset Password using the verification code -->
+      @else {
+        <div class="alert alert-success py-2 px-3 mb-4 d-flex align-items-center" role="alert" style="font-size: 14px; border-radius: 8px;">
+          <i class="bi bi-check-circle-fill me-2"></i>
+          <div>Código enviado correctamente a: <strong>{{ requestForm.value.email }}</strong></div>
+        </div>
+
+        <p class="text-muted text-center mb-4" style="font-size: 14px;">
+          Ingresa el código de 6 dígitos enviado y escribe tu nueva contraseña.
+        </p>
+
+        <form [formGroup]="resetForm" (ngSubmit)="resetPassword()" autocomplete="off">
+          <!-- Code Input -->
+          <div class="input-group mb-3">
+            <span class="input-group-text bg-light border-end-0"><i class="bi bi-key-fill text-muted">&nbsp;</i></span>
+            <input formControlName="code" type="text" class="form-control border-start-0 py-2" placeholder="Código de Verificación (6 dígitos)">
+          </div>
+          @if (resetForm.get('code')?.touched && resetForm.get('code')?.invalid) {
+            <div class="text-danger mb-3" style="font-size: 13px;">
+              @if (resetForm.get('code')?.errors?.['required']) {
+                El código es obligatorio.
+              } @else if (resetForm.get('code')?.errors?.['pattern']) {
+                El código debe tener exactamente 6 dígitos.
+              }
+            </div>
+          }
+
+          <!-- New Password Input -->
+          <div class="input-group mb-3">
+            <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock-fill text-muted">&nbsp;</i></span>
+            <input formControlName="newPassword" type="password" class="form-control border-start-0 py-2" placeholder="Nueva Contraseña (mínimo 10 caracteres)">
+          </div>
+          @if (resetForm.get('newPassword')?.touched && resetForm.get('newPassword')?.invalid) {
+            <div class="text-danger mb-3" style="font-size: 13px;">
+              @if (resetForm.get('newPassword')?.errors?.['required']) {
+                La contraseña es obligatoria.
+              } @else if (resetForm.get('newPassword')?.errors?.['minlength']) {
+                La contraseña debe tener mínimo 10 caracteres.
+              }
+            </div>
+          }
+
+          <!-- Confirm Password Input -->
+          <div class="input-group mb-3">
+            <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock-fill text-muted">&nbsp;</i></span>
+            <input formControlName="confirmPassword" type="password" class="form-control border-start-0 py-2" placeholder="Confirmar Nueva Contraseña">
+          </div>
+          @if (resetForm.get('confirmPassword')?.touched && (resetForm.get('confirmPassword')?.invalid || resetForm.errors?.['passwordMismatch'])) {
+            <div class="text-danger mb-3" style="font-size: 13px;">
+              @if (resetForm.get('confirmPassword')?.errors?.['required']) {
+                Debe confirmar la contraseña.
+              } @else if (resetForm.errors?.['passwordMismatch']) {
+                Las contraseñas no coinciden.
+              }
+            </div>
+          }
+
+          <!-- Alert message -->
+          @if (errorMessage()) {
+            <div class="alert alert-danger py-2 px-3 mb-3 d-flex align-items-center" role="alert" style="font-size: 14px; border-radius: 8px;">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              <div>{{ errorMessage() }}</div>
+            </div>
+          }
+
+          <button class="btn btn-lg btn-primary w-100 py-2 mt-3" type="submit" [disabled]="resetForm.invalid || loading()" style="border-radius: 8px; font-weight: 500; font-size: 16px;">
+            @if (loading()) {
+              <span class="spinner-border spinner-border-sm role-status me-2" aria-hidden="true"></span>
+              Restableciendo...
+            } @else {
+              Restablecer Contraseña
+            }
+          </button>
+
+          <div class="d-flex justify-content-between mt-4" style="font-size: 14px;">
+            <button type="button" class="btn btn-link text-decoration-none p-0 d-inline-flex align-items-center" style="color: #6c757d; font-weight: 500;" (click)="goBack()">
+              <i class="bi bi-chevron-left me-1"></i> Modificar correo
+            </button>
+            <a routerLink="/login" class="text-decoration-none d-inline-flex align-items-center" style="color: #0d6efd; font-weight: 500;">
+              Volver al Login
+            </a>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+</div>

@@ -1,31 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Login } from './login';
-import { SocialAuthService } from '@abacritt/angularx-social-login';
-import { of } from 'rxjs';
+import { Recovery } from './recovery';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 
-describe('Login', () => {
-  let component: Login;
-  let fixture: ComponentFixture<Login>;
+describe('Recovery', () => {
+  let component: Recovery;
+  let fixture: ComponentFixture<Recovery>;
 
   beforeEach(async () => {
-    const mockSocialAuthService = {
-      authState: of(null),
-      initialized: of(true),
-      initState: of(true)
-    };
-
     await TestBed.configureTestingModule({
-      imports: [Login],
+      imports: [Recovery],
       providers: [
-        { provide: SocialAuthService, useValue: mockSocialAuthService },
         provideHttpClient(),
         provideRouter([])
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Login);
+    fixture = TestBed.createComponent(Recovery);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

@@ -4,6 +4,7 @@ import { Product } from './features/products/components/product/product';
 import { Welcome } from './features/home/welcome/welcome';
 import { PageNotFound } from './features/not-found/page-not-found/page-not-found';
 import { Login } from './features/auth/components/login/login';
+import { Recovery } from './features/auth/components/recovery/recovery';
 import { loginGuard } from './features/auth/guards/login-guard';
 import { User } from './features/users/components/user/user';
 import { Number } from './features/numbers/components/number/number';
@@ -18,6 +19,7 @@ export const routes: Routes = [
   { path: 'users', component: User, canActivate: [loginGuard] },
   { path: 'maps', component: Map, canActivate: [loginGuard] },
   { path: 'login', component: Login },
+  { path: 'recovery', component: Recovery },
 
   /* detalle de producto, usando estándar de recursos */
   // { path: 'products/:id', component: ProductId },

@@ -52,4 +52,12 @@ export class LoginService {
       })
     );
   }
+
+  public forgotPassword(email: string) {
+    return this.http.post(`${this.apiUrl}/forgot-password`, { email });
+  }
+
+  public resetPassword(data: any) {
+    return this.http.post(`${this.apiUrl}/reset-password`, data);
+  }
 }
